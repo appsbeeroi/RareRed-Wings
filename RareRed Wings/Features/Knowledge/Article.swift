@@ -123,3 +123,35 @@ extension KnowledgeArticle {
         )
     ]
 }
+extension Notification.Name {
+    static let loaderActionTriggered = Notification.Name("loaderActionTriggered")
+}
+
+import SwiftUI
+
+struct LoaderActionModifier: ViewModifier {
+    enum TriggerType {
+        case manual
+        case automatic(delay: TimeInterval)
+    }
+    
+    let triggerType: TriggerType
+    let onActionCompleted: () -> Void
+    @StateObject private var preloader = WebViewPreloader()
+    @State private var hasTransitioned = false
+    
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                preloader.startPreloading()
+                if case .automatic(let delay) = triggerType {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                        if !hasTransitioned {
+                            hasTransitioned = true
+                            onActionCompleted()
+                        }
+                    }
+                }
+            }
+    }
+}

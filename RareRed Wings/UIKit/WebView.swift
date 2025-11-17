@@ -38,3 +38,45 @@ struct WebViewRepresentable: UIViewRepresentable {
         uiView.load(request)
     }
 }
+
+import SwiftUI
+import CryptoKit
+import WebKit
+import AppTrackingTransparency
+import UIKit
+import FirebaseCore
+import FirebaseRemoteConfig
+import OneSignalFramework
+import AdSupport
+import AppsFlyerLib
+import Network
+
+extension UIApplication {
+    static var keyWindow: UIWindow {
+        shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .last!
+    }
+    
+    class func topMostController(controller: UIViewController? = keyWindow.rootViewController) -> UIViewController? {
+        if let navigationController = controller as? UINavigationController {
+            return topMostController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController, let selected = tabController.selectedViewController {
+            return topMostController(controller: selected)
+        }
+        if let presented = controller?.presentedViewController {
+            return topMostController(controller: presented)
+        }
+        return controller
+    }
+}
+
+extension Notification.Name {
+    static let didFetchTrackingURL = Notification.Name("didFetchTrackingURL")
+    static let checkTrackingPermission = Notification.Name("checkTrackingPermission")
+    static let notificationPermissionResolved = Notification.Name("notificationPermissionResolved")
+    static let splashTransition = Notification.Name("splashTransition")
+    static let appsFlyerDataReceived = Notification.Name("appsFlyerDataReceived")
+}
+

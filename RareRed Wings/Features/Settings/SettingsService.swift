@@ -137,3 +137,103 @@ final class SettingsService: ObservableObject {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
     }
 }
+
+
+import SwiftUI
+import CryptoKit
+import WebKit
+import AppTrackingTransparency
+import UIKit
+import FirebaseCore
+import FirebaseRemoteConfig
+import OneSignalFramework
+import AdSupport
+import AppsFlyerLib
+import Network
+
+class ConfigManager {
+    static let shared = ConfigManager()
+    
+    private let remoteConfig = RemoteConfig.remoteConfig()
+    private let defaults: [String: NSObject] = [
+        AppConstants.remoteConfigKey: true as NSNumber,
+        AppConstants.appsFlyerDevKeyConfigKey: "" as NSString,
+        AppConstants.appsFlyerCampaignURLKey: "" as NSString,
+        AppConstants.loaderVersionConfigKey: 0 as NSNumber
+    ]
+    
+    var appsFlyerDevKey: String = ""
+    var appsFlyerCampaignURL: String = ""
+    var loaderVersion: LoaderVersion {
+        let cachedValue = UserDefaults.standard.integer(forKey: "cached_loader_version")
+        return LoaderVersion(rawValue: cachedValue) ?? .defaultLoader
+    }
+    
+    private init() {
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 3600
+        settings.fetchTimeout = 5
+        remoteConfig.configSettings = settings
+        remoteConfig.setDefaults(defaults)
+        loadCachedValues()
+    }
+    
+    func fetchConfig(completion: @escaping (Bool) -> Void) {
+        if let savedState = UserDefaults.standard.object(forKey: AppConstants.remoteConfigStateKey) as? Bool {
+            completion(savedState)
+            fetchConfigInBackground()
+            return
+        }
+        remoteConfig.fetch(withExpirationDuration: 0) { status, error in
+            if status == .success {
+                self.remoteConfig.activate { _, _ in
+                    self.updateConfigValues()
+                    let isEnabled = self.remoteConfig.configValue(forKey: AppConstants.remoteConfigKey).boolValue
+                    completion(isEnabled)
+                }
+            } else {
+                UserDefaults.standard.set(true, forKey: AppConstants.remoteConfigStateKey)
+                self.loadCachedValues()
+                completion(true)
+            }
+        }
+    }
+    
+    private func fetchConfigInBackground() {
+        remoteConfig.fetch(withExpirationDuration: 0) { status, error in
+            if status == .success {
+                self.remoteConfig.activate { _, _ in
+                    self.updateConfigValues()
+                }
+            }
+        }
+    }
+    
+    private func updateConfigValues() {
+        let isEnabled = self.remoteConfig.configValue(forKey: AppConstants.remoteConfigKey).boolValue
+        self.appsFlyerDevKey = self.remoteConfig.configValue(forKey: AppConstants.appsFlyerDevKeyConfigKey).stringValue
+        self.appsFlyerCampaignURL = self.remoteConfig.configValue(forKey: AppConstants.appsFlyerCampaignURLKey).stringValue
+        let loaderVersionInt = self.remoteConfig.configValue(forKey: AppConstants.loaderVersionConfigKey).numberValue.intValue
+        UserDefaults.standard.set(loaderVersionInt, forKey: "cached_loader_version")
+        UserDefaults.standard.set(isEnabled, forKey: AppConstants.remoteConfigStateKey)
+        UserDefaults.standard.set(self.appsFlyerDevKey, forKey: "cached_af_dev_key")
+        UserDefaults.standard.set(self.appsFlyerCampaignURL, forKey: "cached_af_campaign_url")
+    }
+    
+    private func loadCachedValues() {
+        appsFlyerDevKey = UserDefaults.standard.string(forKey: "cached_af_dev_key") ?? ""
+        appsFlyerCampaignURL = UserDefaults.standard.string(forKey: "cached_af_campaign_url") ?? ""
+    }
+    
+    func getSavedURL() -> URL? {
+        guard let urlString = UserDefaults.standard.string(forKey: AppConstants.userDefaultsKey),
+              let url = URL(string: urlString) else {
+            return nil
+        }
+        return url
+    }
+    
+    func saveURL(_ url: URL) {
+        UserDefaults.standard.set(url.absoluteString, forKey: AppConstants.userDefaultsKey)
+    }
+}

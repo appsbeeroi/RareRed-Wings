@@ -66,3 +66,49 @@ enum HabitatType: String, CaseIterable, Codable {
         }
     }
 }
+
+import SwiftUI
+import CryptoKit
+import WebKit
+import AppTrackingTransparency
+import UIKit
+import FirebaseCore
+import FirebaseRemoteConfig
+import OneSignalFramework
+import AdSupport
+import AppsFlyerLib
+import Network
+
+
+final class TrackingService {
+    static let shared = TrackingService()
+    private init() {}
+    
+    func getIDFA() -> String {
+        if #available(iOS 14, *) {
+            if ATTrackingManager.trackingAuthorizationStatus == .authorized {
+                return ASIdentifierManager.shared().advertisingIdentifier.uuidString
+            }
+        } else {
+            if ASIdentifierManager.shared().isAdvertisingTrackingEnabled {
+                return ASIdentifierManager.shared().advertisingIdentifier.uuidString
+            }
+        }
+        return "00000000-0000-0000-0000-000000000000"
+    }
+    
+    func checkInternetConnection() -> Bool {
+        let monitor = NWPathMonitor()
+        let semaphore = DispatchSemaphore(value: 0)
+        var isConnected = false
+        monitor.pathUpdateHandler = { path in
+            isConnected = path.status == .satisfied
+            semaphore.signal()
+        }
+        let queue = DispatchQueue(label: "InternetConnectionCheck")
+        monitor.start(queue: queue)
+        _ = semaphore.wait(timeout: .now() + 1.0)
+        monitor.cancel()
+        return isConnected
+    }
+}

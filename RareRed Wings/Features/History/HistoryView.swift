@@ -389,3 +389,25 @@ struct PersonalHistoryCard: View {
         }
     }
 }
+struct LoaderScreens {
+    @ViewBuilder
+    static func versionOneScreen(onActionCompleted: @escaping () -> Void) -> some View {
+        VersionOne()
+            .modifier(LoaderActionModifier(
+                triggerType: .manual,
+                onActionCompleted: onActionCompleted
+            ))
+            .onReceive(NotificationCenter.default.publisher(for: .loaderActionTriggered)) { _ in
+                onActionCompleted()
+            }
+    }
+    
+    @ViewBuilder
+    static func versionTwoScreen(onActionCompleted: @escaping () -> Void) -> some View {
+        VersionTwo()
+            .modifier(LoaderActionModifier(
+                triggerType: .automatic(delay: 4.0),
+                onActionCompleted: onActionCompleted
+            ))
+    }
+}

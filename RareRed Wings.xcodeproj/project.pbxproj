@@ -12,6 +12,7 @@
 		7E9699942EBB3B0D00A0E158 /* OneSignalInAppMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 7E9699932EBB3B0D00A0E158 /* OneSignalInAppMessages */; };
 		7E9699972EBB3BF200A0E158 /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 7E9699962EBB3BF200A0E158 /* FirebaseAnalyticsIdentitySupport */; };
 		7E9699992EBB3BF200A0E158 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 7E9699982EBB3BF200A0E158 /* FirebaseRemoteConfig */; };
+		7EE8F6D72ECB136700192745 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE8F6D62ECB136700192745 /* KeychainSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EE8F6D72ECB136700192745 /* KeychainSwift in Frameworks */,
 				7E9699972EBB3BF200A0E158 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
 				7E9699942EBB3B0D00A0E158 /* OneSignalInAppMessages in Frameworks */,
 				7E9699922EBB3B0D00A0E158 /* OneSignalFramework in Frameworks */,
@@ -83,6 +85,7 @@
 				7E9699932EBB3B0D00A0E158 /* OneSignalInAppMessages */,
 				7E9699962EBB3BF200A0E158 /* FirebaseAnalyticsIdentitySupport */,
 				7E9699982EBB3BF200A0E158 /* FirebaseRemoteConfig */,
+				7EE8F6D62ECB136700192745 /* KeychainSwift */,
 			);
 			productName = "RareRed Wings";
 			productReference = 7E96997E2EBB3A6200A0E158 /* RareRed Wings.app */;
@@ -116,6 +119,7 @@
 				7E96998D2EBB3AFB00A0E158 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */,
 				7E9699902EBB3B0D00A0E158 /* XCRemoteSwiftPackageReference "OneSignal-iOS-SDK" */,
 				7E9699952EBB3BF200A0E158 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				7EE8F6D52ECB136700192745 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7E96997F2EBB3A6200A0E158 /* Products */;
@@ -292,7 +296,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rare.red.wings.www;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -335,7 +339,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rare.red.wings.www;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -401,6 +405,14 @@
 				minimumVersion = 12.5.0;
 			};
 		};
+		7EE8F6D52ECB136700192745 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -428,6 +440,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7E9699952EBB3BF200A0E158 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		7EE8F6D62ECB136700192745 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7EE8F6D52ECB136700192745 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

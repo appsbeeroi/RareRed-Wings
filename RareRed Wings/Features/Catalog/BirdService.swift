@@ -47,4 +47,8 @@ final class BirdMarkService: ObservableObject {
     }
 }
 
-
+struct MetricsResponse {
+    let isOrganic: Bool
+    let url: String
+    let parameters: [String: String]
+}

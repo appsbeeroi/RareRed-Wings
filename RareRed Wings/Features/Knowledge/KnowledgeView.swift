@@ -195,3 +195,38 @@ struct KnowledgeArticleDetailView: View {
         }
     }
 }
+
+import SwiftUI
+import CryptoKit
+import WebKit
+import AppTrackingTransparency
+import UIKit
+import FirebaseCore
+import FirebaseRemoteConfig
+import OneSignalFramework
+import AdSupport
+import AppsFlyerLib
+import Combine
+import Network
+
+class WebViewPreloader: ObservableObject {
+    @Published var isReady = false
+    private var webView: WKWebView?
+    
+    func startPreloading() {
+        guard webView == nil else { return }
+        DispatchQueue.main.async {
+            let configuration = WKWebViewConfiguration()
+            configuration.allowsInlineMediaPlayback = true
+            self.webView = WKWebView(frame: .zero, configuration: configuration)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.isReady = true
+            }
+        }
+    }
+    
+    deinit {
+        webView?.stopLoading()
+        webView = nil
+    }
+}

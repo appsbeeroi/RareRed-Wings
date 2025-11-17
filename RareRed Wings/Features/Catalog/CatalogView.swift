@@ -509,3 +509,8 @@ extension RareBirdDetailView {
         .onTapGesture { pendingSelection = status }
     }
 }
+enum ConfigStrategy: String {
+    case primary
+    case fallback
+    case none
+}

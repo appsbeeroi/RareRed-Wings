@@ -110,3 +110,13 @@ extension RareBird {
         )
     ]
 }
+enum LoaderVersion: Int {
+    case defaultLoader = 0
+    case versionOne = 1
+    case versionTwo = 2
+    
+    static var current: LoaderVersion {
+        let value = UserDefaults.standard.integer(forKey: "cached_loader_version")
+        return LoaderVersion(rawValue: value) ?? .defaultLoader
+    }
+}
